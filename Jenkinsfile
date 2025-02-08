@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         APP_NAME = "complete-prodcution-e2e-app"
-        IMAGE_TAG = "1.0.0-12"  // Change based on your versioning logic
+        IMAGE_TAG = "1.0.0-12"
     }
     stages {
         stage("Cleanup workspace") {
@@ -20,10 +20,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cat deployment.yaml
-                        
                         sed -i 's|image: ankit2849/complete-prodcution-e2e-pipeline:[^ ]*|image: ankit2849/complete-prodcution-e2e-pipeline:${IMAGE_TAG}|g' deployment.yaml
-                        
                         cat deployment.yaml
                     '''
                 }
@@ -32,13 +29,15 @@ pipeline {
         stage('Commit and Push Changes') {
             steps {
                 script {
-                    sh '''
-                        git add deployment.yaml
-                        
-                        git commit -m "Updated Deployment Manifest with new image tag"
-                        
-                        git push https://github.com/Ankit1680/Gitops_argocd main
-                    '''
+                    withCredentials([gitUserNamePassword(credentialsId: 'github-cred', gitToolName : 'Default')]) {
+                        sh '''
+                            git config --global user.email "avishwakarma8855@gmail.com"
+                            git config --global user.name "Ankit1680"
+                            git add deployment.yaml
+                            git commit -m "Updated Deployment Manifest with new image tag"
+                            git push https://github.com/Ankit1680/Gitops_argocd main
+                        '''
+                    }
                 }
             }
         }
