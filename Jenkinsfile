@@ -37,7 +37,7 @@ pipeline {
                         
                         git commit -m "Updated Deployment Manifest with new image tag"
                         
-                        git push origin main
+                        git push https://github.com/Ankit1680/Gitops_argocd main
                     '''
                 }
             }
