@@ -29,7 +29,7 @@ pipeline {
         stage('Commit and Push Changes') {
             steps {
                 script {
-                    withCredentials([gitUserNamePassword(credentialsId: 'github-cred', gitToolName : 'Default')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github-cred', gitToolName: 'Default')]) {
                         sh '''
                             git config --global user.email "avishwakarma8855@gmail.com"
                             git config --global user.name "Ankit1680"
