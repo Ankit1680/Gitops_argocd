@@ -37,8 +37,7 @@ pipeline {
                             git config --global user.name "Ankit1680"
                             git add deployment.yaml
                             git commit -m "Updated Deployment Manifest with new image tag"
-                            git push https://github.com/Ankit1680/Gitops_argocd main
-
+                            git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/Ankit1680/Gitops_argocd main
                         '''
                     }
                 }
