@@ -1,54 +1,48 @@
-pipeline{
-    agent{
+pipeline {
+    agent {
         label "jenkins-agent"
     }
 
     environment {
         APP_NAME = "complete-prodcution-e2e-pipeline"
-    
+        IMAGE_TAG = "${APP_NAME}:${BUILD_NUMBER}"  
     }
-    stages{
-        stage("Cleanup workspace"){
-            steps{
+
+    stages {
+        stage("Cleanup workspace") {
+            steps {
                 cleanWs()
             }
-           
-        }
-        stage("Git Checkout"){
-            steps{
-                git branch: 'main', credentialsId: 'github-cred', url: 'https://github.com/Ankit1680/Gitops_argocd'
-            }
-           
         }
 
-        
+        stage("Git Checkout") {
+            steps {
+                git branch: 'main', credentialsId: 'github-cred', url: 'https://github.com/Ankit1680/Gitops_argocd'
+            }
+        }
+
         stage("Update the Deployment Tags") {
             steps {
                 sh '''
                     cat deployment.yaml
                     sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
-                    cat deployment.yaml
+                    cat deployment.yaml  
+                    git status
+                    git add -f deployment.yaml
+                    git commit -m "Updated Deployment Manifest"
                 '''
             }
         }
 
         stage("Push the changed deployment file to Git") {
             steps {
-                sh '''
-                    git config --global user.name "Ankit1680"
-                    git config --global user.email "avishwakarma8855@gmail.com"
-                    git add deployment.yaml
-                    git commit -m "Updated Deployment Manifest"
-                '''
-                withCredentials([gitUserNamePassword(credentialsId: 'github-cred', gitToolName : 'Default')]) {
+                withCredentials([usernamePassword(credentialsId: 'github-cred', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                     sh '''
-                        git push https://github.com/Ankit1680/Gitops_argocd main
+                        git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Ankit1680/Gitops_argocd
+                        git push origin main
                     '''
                 }
             }
         }
-           
-        
     }
-   
 }
