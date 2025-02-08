@@ -36,10 +36,9 @@ pipeline {
 
         stage("Push the changed deployment file to Git") {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github-cred', gitToolName: 'Default')]) {
+                withCredentials([gitUserNamePassword(credentialsId: 'github-cred', gitToolName: 'Default')]) {
                     sh '''
-                        git remote set-url origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Ankit1680/Gitops_argocd
-                        git push origin main
+                         git push https://github.com/Ankit1680/Gitops_argocd main
                     '''
                 }
             }
