@@ -42,7 +42,7 @@ pipeline{
                 '''
                 withCredentials([gitUserNamePassword(credentialsId: 'github-cred', gitToolName : 'Default')]) {
                     sh '''
-                        git push https://${GIT_USER}:${GIT_PASS}@github.com/dmancloud/gitops-complete-prodcution-e2e-pipeline.git main
+                        git push https://github.com/Ankit1680/Gitops_argocd main
                     '''
                 }
             }
